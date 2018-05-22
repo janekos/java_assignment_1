@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game of Dice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <div id="navLogin" class="navItem selected">Login</div>
+        <div id="navGame" class="navItem">Mäng</div>
+    </div>
+    <div id="loginView" class="">
+        <div id="loginContainer">
+            <h1 id="loginH1">Logi sisse</h1>
+            <div class="inputField">
+                <label>Kasutaja: </label>
+                <input type="text" id="unameInput">
+            </div>
+            <div class="inputField">
+                <label>Parool: </label>
+                <input type="text" id="pwInput">
+            </div>
+            <br>
+            <div id="btnContainer">
+                <button id="loginBtn" class="btn">Logi sisse</button>
+                <button id="registerBtn" class="btn">Registreeri</button>
+            </div>
+        </div>
+    </div>
+    <div id="registerView" class="hidden">
+        <div id="loginContainer">
+            <h1 id="loginH1">Registreeri</h1>
+            <div class="inputField">
+                <label>Kasutaja: </label>
+                <input type="text" id="newUnameInput">
+            </div>
+            <div class="inputField">
+                <label>Parool: </label>
+                <input type="text" id="newPwInput">
+            </div>
+            <br>
+            <div id="btnContainer">
+                <button id="backBtn" class="btn">Tagasi</button>
+                <button id="createUserBtn" class="btn">Loo konto</button>
+            </div>
+        </div>
+    </div>
+    <div id="gameView" class="hidden">
+        <div id="gameContainer">
+            <div id="upperWrapper">
+                <div id="playerScore">
+                    <span>Kasutaja skoor: </span>
+                    <span id="playerScoreSpan"></span>
+                </div>
+                <div id="rollDiceWrapper">
+                    <button id="rollDiceBtn" class="btn">Veereta täring</button>
+                </div>
+                <div id="npcScore">
+                    <span>Vastase skoor: </span>
+                    <span id="npcScoreSpan"></span>
+                </div>
+            </div>
+            <div id="lowerWrapper">
+                <div id="playerDice">
+                    <div id="playerDiceOne">kasutaja täring 1</div>
+                    <div id="playerDiceTwo">kasutaja täring 2</div>
+                </div>
+                <div id="resultField">
+                    <table border="1">
+                        <tr>
+                            <th colspan="2">Kasutaja</th>
+                            <th colspan="2">Vastane</th>
+                        </tr>
+                        <tr>
+                            <th>T1</th>
+                            <th>T2</th>
+                            <th>T1</th>
+                            <th>T2</th>
+                        </tr>
+                    </table>
+                </div>
+                <div id="npcDice">
+                    <div id="npcDiceOne">vastase täring 1</div>
+                    <div id="npcDiceTwo">vastase täring 2</div>
+                </div>
+            </div>            
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

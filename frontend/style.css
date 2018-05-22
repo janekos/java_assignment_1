@@ -1,0 +1,139 @@
+body, html{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    font-family: "Arial";
+    background-color: antiquewhite;
+}
+
+#nav{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+    background-color: darkturquoise;
+}
+
+.navItem{
+    cursor: pointer;
+    font-size: 30px;
+    margin-top: 10px;
+    padding: 10px 50px 10px 40px;
+    color: white;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+    border-top: 1px solid white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-weight: bold;
+}
+
+.navItem.selected{
+    background-color: antiquewhite;
+    color: black;
+    border: none;
+}
+
+.navItem:hover{
+    background-color: lightcyan;
+    color: black;
+}
+
+#loginContainer, #gameContainer{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255,255,255,0.5);
+}
+
+#loginContainer{
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#loginH1{
+    margin: auto;
+}
+
+.inputField{
+    margin: 10px;
+    padding: 10px;
+}
+
+.inputField > input{
+    float: right;
+    display: inline-block;
+}
+
+.inputField > label{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn{
+    height: 35px;
+    min-width: 80px;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.btn:hover{ background-color: lightgray; }
+.btn:focus{ background-color: gray; color: white;}
+
+#btnContainer{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#gameView{
+    height: 80%;
+    width: 80%;
+}
+
+#gameContainer{
+    margin-top: 30px;
+    border-radius: 5px;
+    padding: 30px;
+    height: inherit;
+    width: inherit;
+    display: flex;
+    justify-content:space-between;
+    flex-direction: column;
+}
+
+#lowerWrapper, #upperWrapper{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#lowerWrapper{
+    height: 80%;
+    overflow-y: hidden;
+}
+
+#rollDiceBtn{
+    height: 80px;
+    width: 150px;
+    font-size: 30px;
+}
+
+th, td{
+    padding: 5px 10px 5px 10px;
+}
+
+.vertSep{
+    border-left: 2px solid white;
+    width: 1px;
+}
+
+.hidden{
+    display: none;
+}

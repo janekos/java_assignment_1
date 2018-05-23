@@ -17,8 +17,16 @@ public class DatabaseMethods {
 		
 		String users = "CREATE TABLE users (\n"
                 + "	id integer PRIMARY KEY AUTOINCREMENT,\n"
-                + "	uname text NOT NULL,\n"
+                + "	uname text NOT NULL UNIQUE,\n"
                 + "	pw text NOT NULL\n"
+                + ");";
+		
+		String games = "CREATE TABLE games (\n"
+                + "	id integer PRIMARY KEY AUTOINCREMENT,\n"
+                + "	uname text NOT NULL,\n"
+                + "	pscore integer NOT NULL,\n"
+                + "	npcscore integer NOT NULL,\n"
+                + "	gametime integer NOT NULL DEFAULT CURRENT_TIMESTAMP\n"
                 + ");";
 		
 		String sessions = "CREATE TABLE sessions (\n"
@@ -33,7 +41,11 @@ public class DatabaseMethods {
 			Connection conn = DriverManager.getConnection(Config.getDbLoc());
 			Statement stmt = conn.createStatement();			
 			stmt.execute(users);
+			stmt.execute(games);
 			stmt.execute(sessions);
+			
+			stmt.close();
+			conn.close();
 			
 		}
 		catch (SQLException e) { System.out.println("Exception: " + e.getMessage()); e.printStackTrace(); }

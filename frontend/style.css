@@ -83,7 +83,6 @@ body, html{
 }
 
 .btn:hover{ background-color: lightgray; }
-.btn:focus{ background-color: gray; color: white;}
 
 #btnContainer{
     display: flex;
@@ -104,7 +103,7 @@ body, html{
     height: inherit;
     width: inherit;
     display: flex;
-    justify-content:space-between;
+    justify-content:space-around;
     flex-direction: column;
 }
 
@@ -125,9 +124,42 @@ body, html{
     font-size: 30px;
 }
 
+#resultField{
+    text-align: center;
+}
+
+#resultTableWrapper{
+    height: 88%;
+    overflow-y: auto;
+}
+
+table{
+    margin: auto;
+}
+
 th, td{
     padding: 5px 10px 5px 10px;
+    text-align: center;
+    width: 72px;
 }
+
+td, th, table{
+    border: 1px solid black;
+}
+
+#popup{
+    padding: 16px;
+    margin: 10px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 0.5px solid black;
+    font-size: 18px;
+}
+
+#popup.info{ background-color: #cce5ff;}
+#popup.error{ background-color: #f8d7da; }
+#popup.warning{ background-color: #fff3cd; }
 
 .vertSep{
     border-left: 2px solid white;

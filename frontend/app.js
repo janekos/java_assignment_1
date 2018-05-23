@@ -3,13 +3,10 @@
 class GameOfDice{
     constructor(){
         //check user ip for session
-        this.ajax("https://api.ipify.org?format=json", "GET")
-            .then(res => 
-                this.hash(JSON.parse(res).ip)
-            )
-            .then(data =>
-                console.log(data)
-            );
+        /*this.ajax("https://api.ipify.org?format=json", "GET")
+            .then(data => 
+                this.ajax("localhost:6789/db/sessionid/" + this.hash(JSON.parse(data).ip), "GET")
+            )*/
         
         this.bindEvents();
     }
@@ -24,9 +21,34 @@ class GameOfDice{
         });
         
         this.grab("loginBtn").addEventListener("click", (e) => {
-            //if auth true then change to game
-            this.toggleHidden("loginView", "gameView");
-            this.toggleSelected("navLogin", "navGame");
+            
+            let uname = this.grab("unameInput");
+            let pw = this.grab("pwInput");
+            
+            if(uname.value.length == 0){ return this.popup("No username inserted!", "error"); }
+            if(pw.value.length == 0){ return this.popup("No password inserted!", "error")}  
+            
+            this.ajax("http://localhost:6789/db/auth/user/" + uname.value + "/pw/" + this.hash(pw.value), "GET")
+                .then(data => {
+                    if(data != "bad pw" && data != "error" && data != "no user"){
+                        this.toggleHidden("loginView", "gameView");
+                        this.toggleSelected("navLogin", "navGame");
+                        console.log();
+                        let prevScores = data.split(";").slice(1, -1);
+                        for(let i of prevScores){
+                            let ps = i.split(",");
+                            this.grab("resultTable").innerHTML +="<tr>" +
+                                                                    "<td>" + ps[0] + "</td>" +
+                                                                    "<td>" + ps[1] + "</td>" +
+                                                                "</tr>";   
+                        }
+                        //console.log("player: "+ prevScores[0] + ", npc: "+ prevScores[1]);                        
+                    }else if(data == "bad pw" || data == "no user"){
+                        return this.popup("Wrong password or username!", "error");
+                    } else{
+                        return this.popup("Some error has occured!", "error");
+                    }
+                });
         });
         
         this.grab("navLogin").addEventListener("click", (e) => {
@@ -41,11 +63,60 @@ class GameOfDice{
         });
         
         this.grab("createUserBtn").addEventListener("click", (e) => {
-            //if auth true then change to game
-            this.toggleHidden("registerView", "gameView");
-            this.toggleSelected("navLogin", "navGame");
+            
+            let uname = this.grab("newUnameInput");
+            let pw = this.grab("newPwInput");
+            
+            if(uname.value.length == 0){ return this.popup("No username inserted!", "error"); }
+            if(pw.value.length == 0){ return this.popup("No password inserted!", "error")}                            
+            
+            this.ajax("http://localhost:6789/db/create/user/" + uname.value + "/pw/" + this.hash(pw.value), "POST")
+                .then(data => {
+                    if(data == "success"){
+                        this.toggleHidden("registerView", "gameView");
+                        this.toggleSelected("navLogin", "navGame");
+                        //start session
+                    }else{
+                        return this.popup(data, "error");
+                    }
+                });
         });
         
+        this.grab("rollDiceBtn").addEventListener("click", (e) => {
+            this.ajax("http://localhost:6789/calc/roll", "POST")
+                .then(data => {
+                    if(data != "err"){
+                        let rolls = data.replace("[", "").replace("]", "").replace(" ", "").split(",");
+                        
+                        this.grab("resultTable").innerHTML +="<tr>" +
+                                                                    "<td>" + (parseInt(rolls[0])+parseInt(rolls[1])) + "</td>" +
+                                                                    "<td>" + (parseInt(rolls[2])+parseInt(rolls[3])) + "</td>" +
+                                                                "</tr>"; 
+                        
+                        console.log(parseInt(rolls[0]) + " " + parseInt(rolls[1]) + " " + parseInt(rolls[2]) + " " +parseInt(rolls[3]) );
+                    }else{
+                        return this.popup("Something went wrong!", "error");
+                    }
+                    
+                });
+        });
+        
+    }
+    
+    popup(msg, type){
+        //type: info, error, warning
+        let popup = this.grab("popup");
+        if(popup.classList.contains("hidden")){
+            popup.innerHTML = msg;
+            popup.classList.toggle("hidden");
+            popup.classList.toggle(type);
+
+            setTimeout(() => {
+                popup.innerHTML = "";
+                popup.classList.toggle("hidden");
+                popup.classList.toggle(type);
+            }, 5000);
+        }        
     }
     
     ajax(url, methodType){
@@ -55,11 +126,8 @@ class GameOfDice{
             xhr.send();
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4){
-                    if (xhr.status === 200){
-                        res(xhr.response);
-                    } else {
-                        rej(xhr.status);
-                    }
+                    if (xhr.status === 200){ res(xhr.response); }
+                    else { rej(xhr.status); }
                 }
             }
         });

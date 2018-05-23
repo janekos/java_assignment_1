@@ -8,41 +8,42 @@
 <body>
     <div id="nav">
         <div id="navLogin" class="navItem selected">Login</div>
-        <div id="navGame" class="navItem">Mäng</div>
+        <div id="navGame" class="navItem">Game</div>
     </div>
+    <div id="popup" class="hidden"></div>
     <div id="loginView" class="">
         <div id="loginContainer">
-            <h1 id="loginH1">Logi sisse</h1>
+            <h1 id="loginH1">Log in</h1>
             <div class="inputField">
-                <label>Kasutaja: </label>
+                <label>Username: </label>
                 <input type="text" id="unameInput">
             </div>
             <div class="inputField">
-                <label>Parool: </label>
+                <label>Password: </label>
                 <input type="text" id="pwInput">
             </div>
             <br>
             <div id="btnContainer">
-                <button id="loginBtn" class="btn">Logi sisse</button>
-                <button id="registerBtn" class="btn">Registreeri</button>
+                <button id="loginBtn" class="btn">Log in</button>
+                <button id="registerBtn" class="btn">Register</button>
             </div>
         </div>
     </div>
     <div id="registerView" class="hidden">
         <div id="loginContainer">
-            <h1 id="loginH1">Registreeri</h1>
+            <h1 id="loginH1">Register</h1>
             <div class="inputField">
-                <label>Kasutaja: </label>
+                <label>Username: </label>
                 <input type="text" id="newUnameInput">
             </div>
             <div class="inputField">
-                <label>Parool: </label>
+                <label>Password: </label>
                 <input type="text" id="newPwInput">
             </div>
             <br>
             <div id="btnContainer">
-                <button id="backBtn" class="btn">Tagasi</button>
-                <button id="createUserBtn" class="btn">Loo konto</button>
+                <button id="backBtn" class="btn">Back</button>
+                <button id="createUserBtn" class="btn">Create</button>
             </div>
         </div>
     </div>
@@ -50,14 +51,14 @@
         <div id="gameContainer">
             <div id="upperWrapper">
                 <div id="playerScore">
-                    <span>Kasutaja skoor: </span>
+                    <span>User score: </span>
                     <span id="playerScoreSpan"></span>
                 </div>
                 <div id="rollDiceWrapper">
-                    <button id="rollDiceBtn" class="btn">Veereta täring</button>
+                    <button id="rollDiceBtn" class="btn">Roll dice</button>
                 </div>
                 <div id="npcScore">
-                    <span>Vastase skoor: </span>
+                    <span>Opponent score: </span>
                     <span id="npcScoreSpan"></span>
                 </div>
             </div>
@@ -67,18 +68,15 @@
                     <div id="playerDiceTwo">kasutaja täring 2</div>
                 </div>
                 <div id="resultField">
-                    <table border="1">
-                        <tr>
-                            <th colspan="2">Kasutaja</th>
-                            <th colspan="2">Vastane</th>
-                        </tr>
-                        <tr>
-                            <th>T1</th>
-                            <th>T2</th>
-                            <th>T1</th>
-                            <th>T2</th>
-                        </tr>
-                    </table>
+                    <h2>Previous results</h2>
+                    <div id="resultTableWrapper">
+                        <table id="resultTable">
+                            <tr>
+                                <th>User</th>
+                                <th>Opponent</th>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div id="npcDice">
                     <div id="npcDiceOne">vastase täring 1</div>

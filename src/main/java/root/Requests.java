@@ -8,37 +8,48 @@ public class Requests {
 
 	public static void main(String[] args) {
 		
-		File f = new File(Config.getDbDir() + "\\database.db");
+		File f = new File(Config.getDbDir() + "\\db.db");
 		if(!f.exists() || f.isDirectory()) {
 			DatabaseMethods.createNewDb();
 		}
 		
 		port(6789);
+		enableCORS("*", "*", "*");		
 		
 		path("/calc", () -> {
-			get("/roll/:user", (req, res)->{
-				System.out.println(req.params(":user"));
-				return GameHandler.rollDice();
-			});
-			// get dice rolls and return them (player must exist (?) and in session)
+			post("/roll", (req, res) -> GameHandler.rollDice());
 		});
 		path("/db", () -> {
-			//post user creation
-			post("/create/user/*/pw/*", (req, res)->{
-				//user = req.splat()[0]
-				//pw = req.splat()[1]
-				System.out.println(req.splat()[0] + " " + req.splat()[1]);
-				return "";
-			});
-			get("/auth/user/*/pw/*", (req, res)->{
-				System.out.println(req.splat()[0] + " " + req.splat()[1]);
-				return "";
-			});
-			
-			//get auth user (validate and return scores from previous plays)
+			post("/create/user/*/pw/*", "*/*", (req, res) -> PlayerHandler.createPlayer(req.splat()[0], req.splat()[1]));
+			get("/auth/user/*/pw/*", (req, res) -> PlayerHandler.authPlayer(req.splat()[0], req.splat()[1]));
 			// session tracking
 		});
 
+	}
+	
+	private static void enableCORS(final String origin, final String methods, final String headers) {
+
+	    options("/*", (request, response) -> {
+
+	        String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+	        if (accessControlRequestHeaders != null) {
+	            response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+	        }
+
+	        String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+	        if (accessControlRequestMethod != null) {
+	            response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+	        }
+
+	        return "OK";
+	    });
+
+	    before((request, response) -> {
+	        response.header("Access-Control-Allow-Origin", origin);
+	        response.header("Access-Control-Request-Method", methods);
+	        response.header("Access-Control-Allow-Headers", headers);
+	        response.type("text/html;");
+	    });
 	}
 
 }

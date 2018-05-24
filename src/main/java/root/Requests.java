@@ -7,7 +7,7 @@ import java.io.File;
 public class Requests {
 
 	public static void main(String[] args) {
-		
+						
 		File f = new File(Config.getDbDir() + "\\db.db");
 		if(!f.exists() || f.isDirectory()) {
 			DatabaseMethods.createNewDb();
@@ -17,12 +17,17 @@ public class Requests {
 		enableCORS("*", "*", "*");		
 		
 		path("/calc", () -> {
-			post("/roll", (req, res) -> GameHandler.rollDice());
+			post("/roll/user/*/sid/*", (req, res) -> GameHandler.rollDice(req.splat()[0], req.splat()[1]));
 		});
 		path("/db", () -> {
 			post("/create/user/*/pw/*", "*/*", (req, res) -> PlayerHandler.createPlayer(req.splat()[0], req.splat()[1]));
-			get("/auth/user/*/pw/*", (req, res) -> PlayerHandler.authPlayer(req.splat()[0], req.splat()[1]));
-			// session tracking
+			get("/auth/user/*/pw/*", (req, res) -> PlayerHandler.authAndReturnPrevScoresPlayer(req.splat()[0], req.splat()[1]));
+			path("/session", () -> {
+				post("/start/user/*/sid/*", "*/*", (req, res)-> PlayerHandler.startSession(req.splat()[0], req.splat()[1]));
+				put("/end/user/*/sid/*", "*/*", (req, res)-> PlayerHandler.endSession(req.splat()[0], req.splat()[1]));
+				put("/update/user/*/sid/*", "*/*", (req, res)-> PlayerHandler.updateSession(req.splat()[0], req.splat()[1]));
+				get("/check/user/*/sid/*", "*/*", (req, res)-> PlayerHandler.checkSession(req.splat()[0], req.splat()[1]));
+			});
 		});
 
 	}

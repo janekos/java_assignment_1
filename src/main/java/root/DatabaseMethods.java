@@ -26,15 +26,16 @@ public class DatabaseMethods {
                 + "	uname text NOT NULL,\n"
                 + "	pscore integer NOT NULL,\n"
                 + "	npcscore integer NOT NULL,\n"
-                + "	gametime integer NOT NULL DEFAULT CURRENT_TIMESTAMP\n"
+                + "	gametime integer NOT NULL DEFAULT (datetime('now','localtime'))\n"
                 + ");";
 		
 		String sessions = "CREATE TABLE sessions (\n"
                 + "	id integer PRIMARY KEY AUTOINCREMENT,\n"
                 + "	uname text NOT NULL,\n"
                 + "	sessionid text NOT NULL,\n"
-                + "	startTime integer NOT NULL,\n"
-                + "	endTime integer\n"
+                + "	starttime integer NOT NULL,\n"
+                + "	lastactive integer NOT NULL,\n"
+                + "	endtime integer DEFAULT 0\n"
                 + ");";
 		
 		try {

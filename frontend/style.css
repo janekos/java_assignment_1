@@ -155,6 +155,7 @@ td, th, table{
     transform: translateX(-50%);
     border: 0.5px solid black;
     font-size: 18px;
+    z-index: 30;
 }
 
 #popup.info{ background-color: #cce5ff;}

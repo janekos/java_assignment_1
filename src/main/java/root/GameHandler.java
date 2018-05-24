@@ -13,9 +13,10 @@ public class GameHandler {
 	 * Validation: Player must exist
 	 * Validation: Player must be logged in (player session should be started and active)
 	 * */
-	public static String rollDice() {
-		//todo check for player existing and logged in
-		//todo need user to attribute the roll to
+	public static String rollDice(String uname, String sessionId) {
+		
+		PlayerHandler.updateSession(uname, sessionId);
+		
 		Random rand = new Random();
 		String sql = "INSERT INTO games(uname, pscore, npcscore) VALUES(?,?,?)";
 		int[] rolls = new int[]{rand.nextInt(6)+1, rand.nextInt(6)+1, rand.nextInt(6)+1, rand.nextInt(6)+1};

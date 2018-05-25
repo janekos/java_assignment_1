@@ -7,7 +7,7 @@
 </head>
 <body>
     <div id="nav">
-        <div id="navLogin" class="navItem selected">Login</div>
+        <div id="navLogin" class="navItem selected disabled">Login</div>
         <div id="navGame" class="navItem">Game</div>
     </div>
     <div id="popup" class="hidden"></div>
@@ -20,7 +20,7 @@
             </div>
             <div class="inputField">
                 <label>Password: </label>
-                <input type="text" id="pwInput">
+                <input type="password" id="pwInput">
             </div>
             <br>
             <div id="btnContainer">
@@ -38,7 +38,7 @@
             </div>
             <div class="inputField">
                 <label>Password: </label>
-                <input type="text" id="newPwInput">
+                <input type="password" id="newPwInput">
             </div>
             <br>
             <div id="btnContainer">
@@ -51,21 +51,30 @@
         <div id="gameContainer">
             <div id="upperWrapper">
                 <div id="playerScore">
-                    <span>User score: </span>
+                    <span>User score: </span><br>
                     <span id="playerScoreSpan"></span>
                 </div>
                 <div id="rollDiceWrapper">
                     <button id="rollDiceBtn" class="btn">Roll dice</button>
                 </div>
                 <div id="npcScore">
-                    <span>Opponent score: </span>
+                    <span>Opponent score: </span><br>
                     <span id="npcScoreSpan"></span>
                 </div>
             </div>
             <div id="lowerWrapper">
                 <div id="playerDice">
-                    <div id="playerDiceOne">kasutaja täring 1</div>
-                    <div id="playerDiceTwo">kasutaja täring 2</div>
+                    <div id="dice0">
+                        <div class="dice">
+                            <div class="diceDot"></div>
+                        </div>
+                    </div>
+                    <div id="dice1">
+                        <div class="dice">
+                            <div class="diceDot"></div>
+                        </div>
+                    </div>
+                    <div id="pWinner" class="hidden">WINNER</div>
                 </div>
                 <div id="resultField">
                     <h2>Previous results</h2>
@@ -79,8 +88,17 @@
                     </div>
                 </div>
                 <div id="npcDice">
-                    <div id="npcDiceOne">vastase täring 1</div>
-                    <div id="npcDiceTwo">vastase täring 2</div>
+                    <div id="dice2">
+                        <div class="dice">
+                            <div class="diceDot"></div>
+                        </div>
+                    </div>
+                    <div id="dice3">
+                        <div class="dice">
+                            <div class="diceDot"></div>
+                        </div>
+                    </div>
+                    <div id="npcWinner" class="hidden">WINNER</div>
                 </div>
             </div>            
         </div>

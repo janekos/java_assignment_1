@@ -2,8 +2,8 @@
 
 class GameOfDice{
     constructor(){
-        this.sid;
-        this.uname;
+        this.sid = "";
+        this.uname = "";
         this.activeTimer;
         
         this.bindEvents();
@@ -20,16 +20,19 @@ class GameOfDice{
         
         this.grab("loginBtn").addEventListener("click", (e) => {
             
-            let uname = this.grab("unameInput");
-            this.uname = uname.value;
+            let uname = this.grab("unameInput");            
             let pw = this.grab("pwInput");
             
-            if(this.uname.length == 0){ return this.popup("No username inserted!", "error"); }
+            if(uname.length == 0){ return this.popup("No username inserted!", "error"); }
             if(pw.value.length == 0){ return this.popup("No password inserted!", "error"); }  
             
-            this.ajax("http://localhost:6789/db/auth/user/" + this.uname + "/pw/" + this.hash(pw.value), "GET")
+            this.ajax("http://localhost:6789/db/auth/user/" + uname.value + "/pw/" + this.hash(pw.value), "GET")
                 .then(data => {
                     if(data != "bad pw" && data != "error" && data != "no user"){
+                        this.grab("navLogin").classList.remove("disabled");
+                        this.grab("navLogin").innerHTML = "Logout";
+                        
+                        this.uname = uname.value;
                         this.startSession();
                         this.toggleHidden("loginView", "gameView");
                         this.toggleSelected("navLogin", "navGame");
@@ -39,6 +42,7 @@ class GameOfDice{
                             let ps = i.split(",");
                             this.grab("resultTable").innerHTML +="<tr><td>" + ps[0] + "</td><td>" + ps[1] + "</td></tr>";   
                         }
+                        this.grab("resultTableWrapper").scrollTop = this.grab("resultTableWrapper").scrollHeight;
                         uname.value = "";
                         pw.value = "";
                         
@@ -51,31 +55,31 @@ class GameOfDice{
         });
         
         this.grab("navLogin").addEventListener("click", (e) => {
+            
+            if(this.uname.length == 0 || this.sid.length == 0){return;}
             this.ajax("http://localhost:6789/db/session/end/user/" + this.uname + "/sid/" + this.sid, "PUT")
                             .then(data => {this.endSession()});
-            this.toggleHidden(["gameView", "registerView"], "loginView");
-            this.toggleSelected("navGame", "navLogin");
         });
         
         this.grab("navGame").addEventListener("click", (e) => {
-            //if auth true then change to game
-            this.toggleHidden(["loginView", "registerView"], "gameView");
-            this.toggleSelected("navLogin", "navGame");
+            if(this.uname.length == 0 || this.sid.length == 0){return this.popup("Please login.", "error");}
         });
         
         this.grab("createUserBtn").addEventListener("click", (e) => {
             
-            let uname = this.grab("newUnameInput");
-            this.uname = uname.value;
-            
+            let uname = this.grab("newUnameInput");            
             let pw = this.grab("newPwInput");
             
-            if(this.uname.length == 0){ return this.popup("No username inserted!", "error"); }
+            if(uname.length == 0){ return this.popup("No username inserted!", "error"); }
             if(pw.value.length == 0){ return this.popup("No password inserted!", "error"); }                            
             
-            this.ajax("http://localhost:6789/db/create/user/" + this.uname + "/pw/" + this.hash(pw.value), "POST")
+            this.ajax("http://localhost:6789/db/create/user/" + uname.value + "/pw/" + this.hash(pw.value), "POST")
                 .then(data => {
                     if(data == "success"){
+                        this.uname = uname.value;
+                        this.grab("navLogin").classList.remove("disabled");
+                        this.grab("navLogin").innerHTML = "Logout";
+                        
                         this.toggleHidden("registerView", "gameView");
                         this.toggleSelected("navLogin", "navGame");
                         uname.value = "";
@@ -96,10 +100,28 @@ class GameOfDice{
                     .then(data => {
                         if(data != "err"){
                             let rolls = data.replace("[", "").replace("]", "").replace(" ", "").split(",");
-
-                            this.grab("resultTable").innerHTML +="<tr><td>" + (parseInt(rolls[0])+parseInt(rolls[1])) + "</td><td>" + (parseInt(rolls[2])+parseInt(rolls[3])) + "</td></tr>"; 
-
-                            console.log(parseInt(rolls[0]) + " " + parseInt(rolls[1]) + " " + parseInt(rolls[2]) + " " +parseInt(rolls[3]) );
+                            let psum = (parseInt(rolls[0])+parseInt(rolls[1]));
+                            let npcsum = (parseInt(rolls[2])+parseInt(rolls[3]));
+                            this.grab("resultTable").innerHTML +="<tr><td>" + psum + "</td><td>" + npcsum + "</td></tr>"; 
+                            this.grab("resultTableWrapper").scrollTop = this.grab("resultTableWrapper").scrollHeight;
+                            
+                            this.setDices(rolls);
+                            
+                            this.grab("playerScoreSpan").innerHTML = psum;
+                            this.grab("npcScoreSpan").innerHTML = npcsum;
+                            
+                            let pwin = this.grab("pWinner");
+                            let npcwin = this.grab("npcWinner");
+                            if(psum > npcsum){
+                                if(pwin.classList.contains("hidden")){ pwin.classList.remove("hidden");}
+                                if(!npcwin.classList.contains("hidden")){ npcwin.classList.add("hidden");}
+                            }else if(psum < npcsum){
+                                if(!pwin.classList.contains("hidden")){ pwin.classList.add("hidden");}
+                                if(npcwin.classList.contains("hidden")){ npcwin.classList.remove("hidden");}
+                            }else{
+                                if(pwin.classList.contains("hidden")){ pwin.classList.remove("hidden");}
+                                if(npcwin.classList.contains("hidden")){ npcwin.classList.remove("hidden");}
+                            }
                             
                             e.target.removeAttribute("disabled");
                         }else{
@@ -109,6 +131,19 @@ class GameOfDice{
             });          
         });
         
+    }
+    
+    setDices(rolls){
+        for(let i = 0; i < 4; i++){
+            let roll = parseInt(rolls[i]);
+            let dice = this.grab("dice"+i);
+
+            let html = "<div class='dice'>";                                
+            for(let j = 0; j < roll; j++){ html += "<div class='diceDot'></div>"; }
+            html += "</div>";
+
+            dice.innerHTML = html; 
+        }
     }
     
     popup(msg, type){
@@ -123,14 +158,14 @@ class GameOfDice{
                 popup.innerHTML = "";
                 popup.classList.toggle("hidden");
                 popup.classList.toggle(type);
-            }, 5000);
+            }, 2000);
         }        
     }
     
     startSession(){
         this.ajax("https://api.ipify.org?format=json", "GET")
             .then(data => {
-                this.sid = this.hash(JSON.parse(data).ip);
+                this.sid = this.hash(JSON.parse(data).ip + this.uname);
                 this.ajax("http://localhost:6789/db/session/start/user/" + this.uname + "/sid/" + this.sid, "POST")
                     .then(sdata => { this.activeTimerfn(1); });
             });        
@@ -150,9 +185,14 @@ class GameOfDice{
         this.ajax("http://localhost:6789/db/session/end/user/" + this.uname + "/sid/" + this.sid, "PUT");
         this.toggleHidden(["gameView", "registerView"], "loginView");
         this.toggleSelected("navGame", "navLogin");
+        this.grab("navLogin").classList.add("disabled");
+        this.grab("navLogin").innerHTML = "Login";
+        if(!this.grab("pWinner").classList.contains("hidden")){ this.grab("pWinner").classList.add("hidden"); }
+        if(!this.grab("npcWinner").classList.contains("hidden")){ this.grab("npcWinner").classList.add("hidden"); }
         this.grab("resultTable").innerHTML = "<tr><th>User</th><th>Opponent</th></tr>";
         this.uname = "";
         this.sid = "";
+        this.setDices(["1","1","1","1"]);
         this.activeTimerfn(0);
     }
     

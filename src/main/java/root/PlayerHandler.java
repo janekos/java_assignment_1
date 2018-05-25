@@ -13,13 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class PlayerHandler {
-	/* Player session tracking
-	 * 		Player session starts when he logs in
-	 * 		Player session ends when he is logged in and inactive for a configurable amount of time (1 minute by default)
-	 * 		Session timeout error should be shown to player if he was inactive (not playing a game) for over a configurable amount of timeout time (1 minute by default)
-*/
-		
+public class PlayerHandler {		
 	public static String createPlayer(String name, String pw) {
         
 		String sql = "INSERT INTO users(uname, pw) VALUES(?,?)";
@@ -63,17 +57,22 @@ public class PlayerHandler {
         			
         			String prevScores = "";
         			ResultSet gamesRs = stmt.executeQuery(games);
-        			
-            		while(gamesRs.next()) {
-            			prevScores += gamesRs.getInt("pscore") + "," + gamesRs.getInt("npcscore")+";";
-            		}
+        			if(!gamesRs.isClosed()) {
+        				prevScores += gamesRs.getInt("pscore") + "," + gamesRs.getInt("npcscore")+";";
+            			
+                		while(gamesRs.next()) {
+                			prevScores += gamesRs.getInt("pscore") + "," + gamesRs.getInt("npcscore")+";";
+                		}
+                		
+                		gamesRs.close();
+            			usersRs.close();
+                    	stmt.close();
+                        conn.close();
+                        
+                        return prevScores;
+        			}
             		
-            		gamesRs.close();
-        			usersRs.close();
-                	stmt.close();
-                    conn.close();
-            		
-            		return prevScores;
+        			return "success";
             	}else {
             		usersRs.close();
                 	stmt.close();
@@ -93,6 +92,8 @@ public class PlayerHandler {
 
 	public static String startSession(String uname, String sessionId) {
 		String sql = "INSERT INTO sessions(uname, sessionid, starttime, lastactive) VALUES(?,?, (datetime('now','localtime')), (datetime('now','localtime')));";
+		
+		try {endSession(uname, sessionId);}catch(Exception e) {}
 		
 		try {
 			Connection conn = DriverManager.getConnection(Config.getDbLoc());
@@ -157,7 +158,7 @@ public class PlayerHandler {
         		stmt.close();
     			conn.close();
     			
-        		if(d.compareTo(Duration.ofMinutes(1)) == -1) {        			
+        		if(d.compareTo(Duration.ofMinutes(Config.getActiveTime())) == -1) {        			
         			return "success";        			
         		}else {
         			return "session ended";
